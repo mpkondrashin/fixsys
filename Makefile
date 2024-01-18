@@ -3,14 +3,18 @@
 
 ifeq ($(OS),Windows_NT)
 define zip
-	powershell Compress-Archive  -Force $(2) $(3) $(4) $(1)
+	$compress = @{
+  		Path = $(2), $(3), $(4)
+		DestinationPath = $(1)
+	}
+	Compress-Archive @compress
 endef
 else
 define zip
 	zip $(1) $(2) $(3) $(4)
 endef
 endif
-
+#powershell Compress-Archive  -Force $(2) $(3) $(4) $(1)
 fix.zip: fixsys.exe deploy.exe PsExec64.exe
 	$(call zip, "fix.zip" , "fixsys.exe", "deploy.exe", "PsExec64.exe")
 
