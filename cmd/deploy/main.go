@@ -22,6 +22,7 @@ func SetupFolder() {
 		panic(err)
 	}
 	folder = filepath.Dir(path)
+	log.Printf("Folder: %s", folder)
 }
 
 func Run(command string, args ...string) error {
