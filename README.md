@@ -6,6 +6,5 @@
 
 Notes:
 - Log will be written to file fixsys.log
-
 - On each run, fixsys writes local file that indicates to this program what is
   the next task. So running it third time will not do anything.
