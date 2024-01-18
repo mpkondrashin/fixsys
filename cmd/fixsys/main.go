@@ -39,7 +39,7 @@ func SetupFolder() {
 
 func Restart() error {
 	log.Print("restart")
-	return exec.Command("cmd", "/C", "shutdown", "/s").Run()
+	return exec.Command("cmd", "/C", "shutdown", "/r").Run()
 }
 
 func Run(command string, args ...string) error {
@@ -157,7 +157,9 @@ func main() {
 	if !FileExists(Path(step1Flag)) {
 		log.Printf("%s not found", Path(step1Flag))
 		err := Step01() // it should not return control
-		log.Fatal(err)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	if !FileExists(Path(step2Flag)) {
 		log.Printf("%s not found", Path(step2Flag))
