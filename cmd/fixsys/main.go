@@ -39,7 +39,7 @@ func SetupFolder() {
 
 func Restart() error {
 	log.Print("restart")
-	return exec.Command("cmd", "/C", "shutdown", "/r").Run()
+	return Run("cmd", "/C", "shutdown", "/r")
 }
 
 func Run(command string, args ...string) error {
