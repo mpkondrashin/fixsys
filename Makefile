@@ -15,8 +15,8 @@ define zip
 endef
 endif
 #powershell Compress-Archive  -Force $(2) $(3) $(4) $(1)
-fix.zip: fixsys.exe deploy.exe PsExec64.exe
-	$(call zip, "fix.zip" , "fixsys.exe", "deploy.exe", "PsExec64.exe")
+fix.zip: fixsys.exe PsExec64.exe README.txt
+	$(call zip, "fix.zip" , "fixsys.exe", "README.txt")
 
 fixsys.exe: cmd/fixsys/main.go
 #	echo $(wildcard cmd/install/*.go)
@@ -25,9 +25,3 @@ fixsys.exe: cmd/fixsys/main.go
 deploy.exe: cmd/deploy/main.go
 #	echo $(wildcard cmd/install/*.go)
 	GOOS=windows GOARCH=amd64 go build ./cmd/deploy
-
-clean: tidy
-	rm -f setup.zip
-
-tidy:
-	rm -f cmd/examen/examen.exe cmd/examensvc/examensvc.exe cmd/install/install.exe cmd/setup/setup.exe setup.zip

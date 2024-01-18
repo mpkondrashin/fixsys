@@ -2,12 +2,14 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var (
@@ -21,6 +23,7 @@ const (
 	step1Flag = "step1.txt"
 	step2Flag = "step2.txt"
 	logFile   = "fixsys.log"
+	aOnePath  = `C:\Program Files (x86)\Trend Micro\Security Agent\PccNTMon.exe`
 )
 
 var folder string
@@ -35,6 +38,14 @@ func SetupFolder() {
 		panic(err)
 	}
 	folder = filepath.Dir(path)
+}
+
+func SakExists() error {
+	log.Println("Check that sakfile.sys exists")
+	if !FileExists(filepath.Join(DriversFolder, "sakfile.sys")) {
+		return fmt.Errorf("%s is missing - existing", filepath.Join(DriversFolder, "sakfile.sys"))
+	}
+	return nil
 }
 
 func Restart() error {
@@ -61,6 +72,9 @@ func CreateFile(filePath string) error {
 }
 
 func Step01() error {
+	if err := SakExists(); err != nil {
+		return err
+	}
 	if err := Run("bcdedit", "/set", "testsigning", "on"); err != nil {
 		return err
 	}
@@ -84,8 +98,7 @@ func FileExists(filePath string) bool {
 
 func UnloadAOne() error {
 	log.Println("UnloadAOne")
-	aonepath := "C:\\Program Files (x86)\\Trend Micro\\Security Agent\\PccNTMon.exe"
-	return Run(aonepath, "-n", ApexOnePassword)
+	return Run(aOnePath, "-n", ApexOnePassword)
 }
 
 func StopDriver() error {
@@ -94,7 +107,7 @@ func StopDriver() error {
 
 }
 
-var DriversFolder = `C:\Windows\system32\drivers\`
+var DriversFolder = `C:\Windows\system32\drivers`
 
 func RenameDriver() error {
 	log.Println("Rename driver")
@@ -112,16 +125,21 @@ func WriteSakFile() error {
 
 func LoadAOne() error {
 	log.Println("Load AOne")
-	aonepath := "C:\\Programm Files (x86)\\Trend Micro\\Security Agent\\PccNTMon.exe"
-	return Run(aonepath)
+	return Run(aOnePath)
 }
 
 func Step02() error {
 	if err := UnloadAOne(); err != nil {
 		return err
 	}
+	s := 25 * time.Second
+	log.Printf("Wait to upload. Sleep for %s", s)
+	time.Sleep(s)
 	if err := StopDriver(); err != nil {
-		return err
+		if !strings.Contains(err.Error(), "exit status 1062") {
+			return err
+		}
+		log.Println(err)
 	}
 	if err := RenameDriver(); err != nil {
 		return err
@@ -129,10 +147,23 @@ func Step02() error {
 	if err := WriteSakFile(); err != nil {
 		return err
 	}
+	go func() {
+		s := 10 * time.Second
+		log.Printf("Wait to Load. Sleep for %s", s)
+		time.Sleep(s)
+		if err := Run("bcdedit", "/set", "testsigning", "off"); err != nil {
+			log.Print(err)
+		}
+		CreateFile(Path(step2Flag))
+		os.Exit(0)
+	}()
 	if err := LoadAOne(); err != nil {
 		return err
 	}
-	return CreateFile(Path(step2Flag))
+	s = 20 * time.Second
+	log.Printf("Wait to run bcedit. Sleep for %s", s)
+	time.Sleep(s)
+	return nil
 }
 
 func main() {
