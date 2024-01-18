@@ -84,7 +84,7 @@ func FileExists(filePath string) bool {
 
 func UnloadAOne() error {
 	log.Println("UnloadAOne")
-	aonepath := "C:\\Programm Files (x86)\\Trend Micro\\Security Agent\\PccNTMon.exe"
+	aonepath := "C:\\Program Files (x86)\\Trend Micro\\Security Agent\\PccNTMon.exe"
 	return Run(aonepath, "-n", ApexOnePassword)
 }
 
