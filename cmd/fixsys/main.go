@@ -160,6 +160,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		return
 	}
 	if !FileExists(Path(step2Flag)) {
 		log.Printf("%s not found", Path(step2Flag))
