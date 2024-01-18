@@ -37,7 +37,6 @@ func RunFix(address, adminUsername, adminPassword, apexOnePassword string) error
 	psExecName := "PSExec64.exe"
 	psExecPath := Path(psExecName)
 	cmd := []string{
-		psExecPath,
 		"-c",
 		"-f",
 		"-u", adminUsername,
