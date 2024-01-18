@@ -3,7 +3,7 @@
 
 ifeq ($(OS),Windows_NT)
 define zip
-	powershell Compress-Archive  -Force "$(2)" "$(3)" "$(4)" "$(1)"
+	powershell Compress-Archive  -Force $(2) $(3) $(4) $(1)
 endef
 else
 define zip
