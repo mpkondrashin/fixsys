@@ -49,10 +49,13 @@ func RunFix(address, adminUsername, adminPassword, apexOnePassword string) error
 }
 
 func main() {
-	address = "127.0.0.1"
-	adminUsername := "administrator"
-	adminPassword := "P@ssw0rd"
-	apexOnePassword := "unload"
+	if len(os.Args) != 5 {
+		log.Fatalf("usage: %s address username password apex_unload_password", os.Args[0])
+	}
+	address = os.Args[1]
+	adminUsername := os.Args[2]
+	adminPassword := os.Args[3]
+	apexOnePassword := os.Args[4]
 	err := RunFix(address, adminUsername, adminPassword, apexOnePassword)
 	if err != nil {
 		log.Println(err)

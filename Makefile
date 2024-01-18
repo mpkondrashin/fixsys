@@ -3,7 +3,7 @@
 
 ifeq ($(OS),Windows_NT)
 define zip
-	$compress = @{
+	\$compress = @{
   		Path = $(2), $(3), $(4)
 		DestinationPath = $(1)
 	}
