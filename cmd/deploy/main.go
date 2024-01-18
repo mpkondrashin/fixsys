@@ -50,6 +50,7 @@ func RunFix(address, adminUsername, adminPassword, apexOnePassword string) error
 }
 
 func main() {
+	SetupFolder()
 	if len(os.Args) != 5 {
 		log.Fatalf("usage: %s address username password apex_unload_password", os.Args[0])
 	}
