@@ -15,13 +15,13 @@ define zip
 endef
 endif
 #powershell Compress-Archive  -Force $(2) $(3) $(4) $(1)
-fix.zip: fixsys.exe PsExec64.exe README.txt
+fix.zip: fixsys.exe README.txt
 	$(call zip, "fix.zip" , "fixsys.exe", "README.txt")
 
 fixsys.exe: cmd/fixsys/main.go
 #	echo $(wildcard cmd/install/*.go)
 	GOOS=windows GOARCH=amd64 go build ./cmd/fixsys
 
-deploy.exe: cmd/deploy/main.go
+#deploy.exe: cmd/deploy/main.go
 #	echo $(wildcard cmd/install/*.go)
-	GOOS=windows GOARCH=amd64 go build ./cmd/deploy
+#	GOOS=windows GOARCH=amd64 go build ./cmd/deploy
